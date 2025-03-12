@@ -90,7 +90,8 @@ function handleOperator(operator) {
         if (firstOperand === null) {
             calculator.firstOperand = inputValue;
         } else if (previousOperator && !calculator.waitingForSecondOperand) {
-            const result = calculation[previousOperator](firstOperand, inputValue);
+            let result = calculation[previousOperator](firstOperand, inputValue);
+            result = parseFloat(result.toFixed(2));
             calculator.displayValue = String(result);
             calculator.firstOperand = result;
         }
