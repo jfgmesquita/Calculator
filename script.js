@@ -46,8 +46,8 @@ keys.addEventListener('click', (event) => {
 });
 
 function inputDigit(digit) {
-    let waitingForSecondOperand = calculator.waitingForSecondOperand;
     let displayValue = calculator.displayValue;
+    let waitingForSecondOperand = calculator.waitingForSecondOperand;
 
     if (waitingForSecondOperand === true) {
         calculator.displayValue = digit;
@@ -74,17 +74,24 @@ function resetCalculator() {
 }
 
 function handleOperator(operator) {
-    let displayValue = calculator.displayValue;
-    let firstOperand = calculator.firstOperand;
-    let inputValue = parseFloat(displayValue);
-
     if (firstOperand === null) {
         calculator.firstOperand = inputValue;
-    }
-    
+    } else if (operator) { 
+        const result = calculation[operator](calculator.firstOperand, parseFloat(calculator.displayValue));
+        calculation.operator = null;
+        calculator.displayValue = String(result);
+        calculator.firstOperand = result;
+    }       
+
     calculator.waitingForSecondOperand = true;
     calculator.operator = operator;
     updateDisplay();
 }
-   
 
+let calculation = {
+    '+': (firstOperand, secondOperand) => firstOperand + secondOperand,
+    '-': (firstOperand, secondOperand) => firstOperand - secondOperand,
+    '*': (firstOperand, secondOperand) => firstOperand * secondOperand,
+    '/': (firstOperand, secondOperand) => firstOperand / secondOperand,
+    '=': (firstOperand, secondOperand) => secondOperand
+};
