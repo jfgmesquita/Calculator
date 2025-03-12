@@ -36,6 +36,7 @@ keys.addEventListener('click', (event) => {
     }
     if (target.classList.contains('equals')) {
         console.log('key', target.value);
+        handleOperator(target.value);
         return;
     }
     if (target.classList.contains('number')) {
@@ -74,17 +75,30 @@ function resetCalculator() {
 }
 
 function handleOperator(operator) {
-    if (firstOperand === null) {
-        calculator.firstOperand = inputValue;
-    } else if (operator) { 
-        const result = calculation[operator](calculator.firstOperand, parseFloat(calculator.displayValue));
-        calculation.operator = null;
-        calculator.displayValue = String(result);
-        calculator.firstOperand = result;
-    }       
+    const { firstOperand, displayValue, operator: previousOperator } = calculator;
+    const inputValue = parseFloat(displayValue);
 
-    calculator.waitingForSecondOperand = true;
-    calculator.operator = operator;
+    if (operator === '=') {
+        if (previousOperator && calculator.waitingForSecondOperand === false) {
+            const result = calculation[previousOperator](firstOperand, inputValue);
+            calculator.displayValue = String(result);
+            calculator.firstOperand = result;
+            calculator.operator = null;
+            calculator.waitingForSecondOperand = false;
+        }
+    } else {
+        if (firstOperand === null) {
+            calculator.firstOperand = inputValue;
+        } else if (previousOperator && !calculator.waitingForSecondOperand) {
+            const result = calculation[previousOperator](firstOperand, inputValue);
+            calculator.displayValue = String(result);
+            calculator.firstOperand = result;
+        }
+
+        calculator.waitingForSecondOperand = true;
+        calculator.operator = operator;
+    }
+
     updateDisplay();
 }
 
