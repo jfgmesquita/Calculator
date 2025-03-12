@@ -21,6 +21,7 @@ keys.addEventListener('click', (event) => {
     }
     if (target.classList.contains('operator')) {
         console.log('operator', target.value);
+        handleOperator(target.value);
         return;
     }
     if (target.classList.contains('decimal')) {
@@ -72,4 +73,18 @@ function resetCalculator() {
     updateDisplay();
 }
 
+function handleOperator(operator) {
+    let displayValue = calculator.displayValue;
+    let firstOperand = calculator.firstOperand;
+    let inputValue = parseFloat(displayValue);
+
+    if (firstOperand === null) {
+        calculator.firstOperand = inputValue;
+    }
+    
+    calculator.waitingForSecondOperand = true;
+    calculator.operator = operator;
+    updateDisplay();
+}
+   
 
